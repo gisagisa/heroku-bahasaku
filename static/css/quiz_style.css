@@ -1,0 +1,49 @@
+.bg_quiz {
+    background:#61935f;
+  }
+ 
+.card {
+    margin-top:35px;
+    margin-left:110px;
+    background-color: #cae4c2;
+    width: 75em;
+}
+
+.card-title {
+  margin-top:0px;
+  font-family: 'Montserrat', sans-serif;
+  color: #fcfaf9;
+}
+
+.card-score {
+  font-family: 'Montserrat', sans-serif;
+  color: #f0bc68;
+}
+.btn{
+  margin-top:20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-color: #20231E;
+  background-color: #20231E;
+  color: #fcfaf9;
+  border-radius: 30px;
+  font-family: 'Quicksand', sans-serif;
+}
+.isyaratku{
+  margin-top:15px;
+  margin-right: 15px;
+  font-family: 'Cinzel', serif;
+  color: #fcfaf9;
+}
+
+.container{
+  width: 400px;
+  height: 300px;
+  border: 2px solid #333;
+}
+
+.videoElement{
+  margin-top: 10px;
+  width: 400px;
+  height: 300px;
+}

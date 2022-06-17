@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Course</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&family=Quicksand:wght@300&family=Zen+Maru+Gothic:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <!-- <link rel="stylesheet" href="../assets/css/course_style.css"> -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='css/course_style.css')}}"
+    />
+  </head>
+
+  <body class="bg_score">
+    <div>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <h6 class="isyaratku">BAHASAKU</h6>
+      </div>
+      <div>
+        <h3 class="card-text text-center">
+          Ingatlah Isyarat untuk Kata Berikut Ini
+        </h3>
+      </div>
+      <div class="d-flex justify-content-center">
+        <div class="text-center">
+          <div class="card text-center" style="width: 15rem; height: 23rem">
+            <img
+              src="{{ url_for('static',filename='image/phone.jpg') }}"
+              id="imgIsyarat"
+              class="card-img-top"
+              alt="gambar"
+            />
+            <div class="card-body text-center">
+              <h4 id="isyarat" class="card-text">PHONE CALL</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-grid gap-2 d-md-block">
+      <a
+        onClick="backButton()"
+        type="button"
+        class="btn btn-secondary btn-lg"
+        style="background-color: #20231e"
+      >
+        KEMBALI
+      </a>
+    </div>
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <a
+        onClick="lanjutButton()"
+        type="button"
+        class="btn btn-secondary btn-lg"
+        style="background-color: #f0bc68; border-color: #f0bc68"
+      >
+        LANJUT
+      </a>
+    </div>
+  </body>
+
+  <script>
+    let step = 0;
+    const isyarat = document.getElementById("isyarat");
+    // const imgIsyarat = document.getElementById("imgIsyarat");
+    function lanjutButton() {
+      //   if (step == 0) {
+      //     document.getElementById("imgIsyarat").src =
+      //       "{{ url_for('static',filename='image/phone.jpg') }}";
+      //     isyarat.innerText = "PHONE CALL";
+      //   }
+      if (step == 0) {
+        document.getElementById("imgIsyarat").src =
+          "{{ url_for('static',filename='image/ok.jpg') }}";
+        isyarat.innerText = "OK";
+      } else if (step == 1) {
+        document.getElementById("imgIsyarat").src =
+          "{{ url_for('static',filename='image/stop.jpg') }}";
+        isyarat.innerText = "STOP THAT";
+      } else if (step == 2) {
+        document.getElementById("imgIsyarat").src =
+          "{{ url_for('static',filename='image/thumbs.jpg') }}";
+        isyarat.innerText = "THUMBS UP";
+      } else if (step == 3) {
+        document.getElementById("imgIsyarat").src =
+          "{{ url_for('static',filename='image/peace.jpg') }}";
+        isyarat.innerText = "PEACE";
+      } else if (step == 4) {
+        window.location.href = "http://127.0.0.1:5000/transisi";
+      }
+      step++;
+      console.log(step);
+    }
+
+    function backButton() {
+      step--;
+      if (step == 4) {
+        document.getElementById("imgIsyarat").src =
+          "{{ url_for('static',filename='image/peace.jpg') }}";
+        isyarat.innerText = "PEACE";
+      } else if (step == 3) {
+        document.getElementById("imgIsyarat").src =
+          "{{ url_for('static',filename='image/thumbs.jpg') }}";
+        isyarat.innerText = "THUMBS UP";
+      } else if (step == 2) {
+        document.getElementById("imgIsyarat").src =
+          "{{ url_for('static',filename='image/stop.jpg') }}";
+        isyarat.innerText = "STOP THAT";
+      } else if (step == 1) {
+        document.getElementById("imgIsyarat").src =
+          "{{ url_for('static',filename='image/ok.jpg') }}";
+        isyarat.innerText = "OK";
+      } else if (step == 0) {
+        document.getElementById("imgIsyarat").src =
+          "{{ url_for('static',filename='image/phone.jpg') }}";
+        isyarat.innerText = "PHONE CALL";
+      } else if (step == -1) {
+        window.location.href = "http://127.0.0.1:5000/dashboard";
+      }
+      
+    }
+  </script>
+</html>

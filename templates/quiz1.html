@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.1/math.js"
+      integrity="sha512-qBGHnIjw1CTZC0Vpshjjb4StUqVHm8LqqE4cco3FdEu1lS+gpXv/HON5qNjNq5mVnIlZPABGqkGksRrV6NZx+A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/keras-js/0.3.0/keras.js"
+      integrity="sha512-AK9rthN75tLPoYbWWeAmI0MKq/45v+QJG5VoU7PByV2Mgmp9LsrtAvV17reBKeZyHZrbvohL8Gk0rQwcmZ37Aw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/numjs/0.14.2/numjs.js"
+      integrity="sha512-/yFItl0Q42OSifD3hovQyiChQPI5R2a+vngTcnmp/AgtP8tf0EpF+xAfg/byr9lxRrUnNVl7GqDRa5R/n8QQcg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="./opencv.js"></script>
+    <title>Quiz</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel&family=Montserrat:wght@300&family=Quicksand:wght@300&family=Zen+Maru+Gothic:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='css/quiz_style.css')}}"
+    />
+    <!-- <link rel="stylesheet" href="./quiz_style.css" /> -->
+  </head>
+
+  <body class="bg_quiz">
+    <div>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <h4 class="isyaratku">BAHASAKU</h4>
+      </div>
+
+      <div class="text-center">
+        <br />
+        <h3 class="card-title">Peragakan Bahasa Isyarat Berikut Ini</h3>
+        <br />
+        <h3 class="card-score" id="task">OK</h3>
+      </div>
+
+      <div id="container" class="text-center">
+        <video autoplay="true" id="videoElement" class="videoElement"></video>
+      </div>
+      <canvas id="testframe" style="display: none"></canvas>
+      <div class="text-center">
+        <a
+          onClick="skipButton()"
+          type="button"
+          class="btn btn-secondary btn-lg"
+        >
+          SKIP
+        </a>
+      </div>
+    </div>
+  </body>
+  <script>
+    var model, mask_model, ctx, videoWidth, videoHeight, canvas;
+    const video = document.getElementById("videoElement");
+    const task = document.getElementById("task");
+    const state = {
+      backend: "webgl",
+    };
+    function debounce(func, timeout = 300) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          func.apply(this, args);
+        }, timeout);
+      };
+    }
+    function captureVideo(video) {
+      var canvas = document.getElementById("testframe");
+      canvas.width = 200;
+      canvas.height = 200;
+      var canvasContext = canvas.getContext("2d");
+      canvasContext.drawImage(video, 0, 0, 200, 200);
+      return canvasContext.getImageData(0, 0, 200, 200);
+    }
+    async function setupCamera() {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: { facingMode: "user" },
+      });
+      video.srcObject = stream;
+      return new Promise((resolve) => {
+        video.onloadedmetadata = () => {
+          resolve(video);
+        };
+      });
+    }
+
+    window.localStorage.setItem("score", 0);
+    let step = 0;
+
+    const renderPrediction = debounce(async () => {
+      tf.engine().startScope();
+      //estimatefaces model takes in 4 parameter (1) video, returnTensors, flipHorizontal, and annotateBoxes
+      const canvas = captureVideo(video);
+      let arrayRGB = [];
+      for (let index = 0; index < canvas.data.length; index += 4) {
+        arrayRGB.push([
+          canvas.data[index],
+          canvas.data[index + 1],
+          canvas.data[index + 2],
+        ]);
+      }
+      chunkArray2 = math.reshape(arrayRGB, [1, 200, 200, 3]);
+      const predictions = await model.predict(tf.stack(chunkArray2));
+      const score = window.localStorage.getItem("score");
+      const predictedValue = predictions.arraySync()[0];
+      console.log(predictedValue);
+      const resultPred = Math.max(...predictedValue);
+      const index = predictedValue.indexOf(resultPred);
+      if (index == 0 && step == 0) {
+        // swal({"Good job!", "Jawabanmu Benar", "success", closeOnConfirm: false,});
+        swal({
+          title: "Good Job",
+          text: "Jawabanmu Benar",
+          icon: "success",
+          dangerMode: false,
+          showCancelButton: false,
+        }).then((lanjut) => {
+          if (lanjut) {
+            task.innerText = "PEACE";
+            window.localStorage.setItem("score", parseInt(score) + 20);
+            step++;
+          }
+        });
+      } else if (index == 1 && step == 1) {
+        swal({
+          title: "Good Job",
+          text: "Jawabanmu Benar",
+          icon: "success",
+          dangerMode: false,
+          showCancelButton: false,
+        }).then((lanjut) => {
+          if (lanjut) {
+            task.innerText = "PHONE CALL";
+            window.localStorage.setItem("score", parseInt(score) + 20);
+            step++;
+          }
+        });
+      } else if (index == 2 && step == 2) {
+        swal({
+          title: "Good Job",
+          text: "Jawabanmu Benar",
+          icon: "success",
+          dangerMode: false,
+          showCancelButton: false,
+        }).then((lanjut) => {
+          if (lanjut) {
+            task.innerText = "STOP THAT";
+            window.localStorage.setItem("score", parseInt(score) + 20);
+            step++;
+          }
+        });
+      } else if (index == 3 && step == 3) {
+        swal({
+          title: "Good Job",
+          text: "Jawabanmu Benar",
+          icon: "success",
+          dangerMode: false,
+          showCancelButton: false,
+        }).then((lanjut) => {
+          if (lanjut) {
+            task.innerText = "THUMBS UP";
+            window.localStorage.setItem("score", parseInt(score) + 20);
+            step++;
+          }
+        });
+      } else if (index == 4 && step == 4) {
+        swal({
+          title: "Good Job",
+          text: "Jawabanmu Benar",
+          icon: "success",
+          dangerMode: false,
+          showCancelButton: false,
+        }).then((lanjut) => {
+          if (lanjut) {
+            window.localStorage.setItem("score", parseInt(score) + 20);
+            window.location.href = "http://127.0.0.1:5000/score";
+            step++;
+          }
+        });
+      }
+
+      //update frame
+      requestAnimationFrame(renderPrediction);
+      tf.engine().endScope();
+    }, 500);
+
+    const setupPage = async () => {
+      await tf.setBackend(state.backend);
+      await setupCamera();
+      video.play();
+
+      videoWidth = video.videoWidth;
+      videoHeight = video.videoHeight;
+      video.width = videoWidth;
+      video.height = videoHeight;
+
+      model = await tf.loadLayersModel("../static/models/model.json");
+
+      renderPrediction();
+    };
+
+    function skipButton() {
+      if (step == 0) {
+        task.innerText = "PEACE";
+      } else if (step == 1) {
+        task.innerText = "PHONE CALL";
+      } else if (step == 2) {
+        task.innerText = "STOP THAT";
+      } else if (step == 3) {
+        task.innerText = "THUMBS UP";
+      } else if (step == 4) {
+        window.location.href = "http://127.0.0.1:5000/score";
+      }
+
+      swal({
+          title: "Apakah kamu yakin?",
+          text: "Kamu akan Melewati 1 Soal",
+          icon: "warning",
+          dangerMode: true,
+          showCancelButton: false,
+        }).then((lanjut) => {
+          if (lanjut) {
+            step++;
+          }
+        });
+    }
+
+    setupPage();
+  </script>
+</html>

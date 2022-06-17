@@ -1,0 +1,77 @@
+body, html {
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.bg-image {
+  /* The image used */
+  background-image: url('/static/image/bg1.jpg');
+
+  /* Add the blur effect */
+  filter: blur(6px);
+  -webkit-filter: blur(6px);
+
+  /* Full height */
+  height: 100%;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Position text in the middle of the page/image */
+.bg-text {
+  font-family: 'Montserrat', sans-serif;
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(186,184,171,0.5); /* Black w/opacity/see-through */
+  color: white;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 80%;
+  height: 300px;
+  padding: 20px;
+  text-align: center;
+}
+ 
+.card {
+    margin-top:35px;
+    margin-left:110px;
+    background-color: #cae4c2;
+    width: 75em;
+}
+
+.card-title {
+  margin-top:0px;
+  font-family: 'Montserrat', sans-serif;
+  color: #fcfaf9;
+}
+
+.card-score {
+  font-family: 'Montserrat', sans-serif;
+  color: #f0bc68;
+}
+.btn{
+  margin-top:0px;
+  margin-left: 112px;
+  margin-right: 112px;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: #fcfaf9;
+  border-radius: 30px;
+  font-family: 'Quicksand', sans-serif;
+  position: absolute;
+  transform: translate(-0%, -200%);
+}
+.isyaratku{
+  margin-top:30px;
+  margin-right: 30px;
+  font-family: 'Cinzel', serif;
+  color: #fcfaf9;
+}

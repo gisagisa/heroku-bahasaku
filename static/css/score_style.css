@@ -1,0 +1,36 @@
+.bg_score {
+    background:#e8ecee;
+  }
+ 
+.card {
+    margin-top:20px;
+    background-color: #cae4c2;
+    width: 77em;
+    height: 480px;
+}
+
+.card-title {
+  font-family: 'Montserrat', sans-serif;
+  color: #61935f;
+}
+
+.card-score {
+  font-family: 'Montserrat', sans-serif;
+  color: #f0bc68;
+}
+.btn{
+  margin-top:15px;
+  background-color: #61935f;
+  color: #fcfaf9;
+  border-radius: 30px;
+  font-family: 'Quicksand', sans-serif;
+}
+.isyaratku{
+  margin-top:15px;
+  margin-left: 15px;
+  font-family: 'Cinzel', serif;
+  color: #61935f;
+}
+.img_fluid{
+  max-width: 100%;
+}
